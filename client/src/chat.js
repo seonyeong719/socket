@@ -16,14 +16,18 @@ function Chat({ socket, userName, room }) {
 
       await socket.emit("sendMessage", messageData);
       setMsgList((list) => [...list, messageData]);
+      setCurrentMsg("");
     }
   };
 
   useEffect(() => {
-    socket.on("receiveMessage", (data) => {
-      setMsgList((list) => [...list, data]);
-      console.log(msgList);
-    });
+    socket.on(
+      "receiveMessage",
+      (data) => {
+        setMsgList((list) => [...list, data]);
+      },
+      [socket]
+    );
   });
   return (
     <Wrapper>
@@ -48,6 +52,7 @@ function Chat({ socket, userName, room }) {
       <div>
         <input
           type="text"
+          value={currentMsg}
           placeholder="Hi"
           onChange={(e) => {
             setCurrentMsg(e.target.value);
